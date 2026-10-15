@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>By Abyaad (shiroo)</title>
+<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>TO TKA SMA</title>
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#eef3f7;--card:#fff;--tx:#17212b;--mut:#5d6b7a;--ac:#1d5fd1;--acs:#e4edfc;--ok:#157a43;--okb:#dff4e7;--no:#b3261e;--nob:#fbe4e1;--bd:#d5dde6}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#0f151c;--card:#18212b;--tx:#e8eef5;--mut:#93a2b3;--ac:#6ea2ff;--acs:#1c2c47;--ok:#5fd28d;--okb:#163525;--no:#ff8a80;--nob:#3b1d1a;--bd:#2a3644}}
@@ -29,6 +29,7 @@ h1{margin:0;font-size:1.7rem;letter-spacing:-.02em}h2{font-size:1.1rem;margin:26
 .ps{background:var(--card);border-left:4px solid var(--ac);border-radius:8px;padding:12px 14px;margin:10px 0;font-size:.95rem;white-space:pre-line;max-height:260px;overflow:auto}
 .opt.on{border-color:var(--ac);background:var(--acs)}.tf{justify-content:space-between;align-items:center;cursor:default}.tb{display:flex;gap:6px;flex-shrink:0}
 .tb button{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;padding:4px 10px;font:inherit;cursor:pointer}.tb button.on{background:var(--ac);color:#fff;border-color:var(--ac)}.pri:disabled{opacity:.5;cursor:default}
+.msg{border-radius:12px;padding:12px 14px;margin:12px 0;font-weight:600}.msg.pa{background:var(--okb);color:var(--ok)}.msg.fa{background:var(--nob);color:var(--no)}
 button:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
 </style></head><body><div id="app"></div><div id="t"></div>
 <script>
@@ -38,7 +39,7 @@ let S={};try{S=JSON.parse(localStorage.getItem('tka1'))||{}}catch(e){}
 S.seen=S.seen||{};S.round=S.round||{};S.xp=S.xp||0;S.streak=S.streak||0;S.last=S.last||'';
 const save=()=>{try{localStorage.setItem('tka1',JSON.stringify(S))}catch(e){}};
 function roll(){if(S.day!==T()||!S.dq){S.day=T();S.dq={ans:0,ok:0,subj:[],combo:0,mc:0,got:{}};save()}}
-let view='home',Z=null,tm;
+let view='home',Z=null,tm,TEST=false;
 const toast=m=>{const t=$('#t');t.textContent=m;t.classList.add('s');clearTimeout(tm);tm=setTimeout(()=>t.classList.remove('s'),2600)};
 const gain=n=>{S.xp+=n;if(Z)Z.xp+=n};
 const SUB={mtk:['Matematika','🧮'],ind:['Bahasa Indonesia','📖'],ing:['Bahasa Inggris','🌍']};
@@ -196,21 +197,34 @@ Z={s,qs,i:0,ok:0,done:false,reset,sel:null,n:(S.round[s]||0)+1,xp:0};view='quiz'
 function ans(k){if(Z.sel!=null)return;Z.sel=k;fin(k==Z.qs[Z.i].a)}
 function tog(i,v){if(Z.sel!=null)return;if(Z.qs[Z.i].t=='pgk')Z.pick[i]=!Z.pick[i];else Z.pick[i]=v;draw()}
 function chk(){const q=Z.qs[Z.i];if(Z.sel!=null||Z.pick.includes(null))return;Z.sel='x';fin(q.a.every((v,i)=>Z.pick[i]===v))}
-function fin(ok){const q=Z.qs[Z.i];Z.res=ok;roll();const D=S.dq;
+function fin(ok){const q=Z.qs[Z.i];if(TEST){if(Z.s=='mtk')ok=true;if(Z.s=='ind')ok=false;Z.res=ok;if(ok)Z.ok++;draw();return}Z.res=ok;roll();const D=S.dq;
 if(S.last!==T()){S.streak=S.last===Y()?S.streak+1:1;S.last=T()}
 (S.seen[Z.s]=S.seen[Z.s]||[]).push(q.id);D.ans++;if(!D.subj.includes(Z.s))D.subj.push(Z.s);
 if(ok){Z.ok++;D.ok++;D.combo++;D.mc=Math.max(D.mc,D.combo);gain(10)}else D.combo=0;
 QS.forEach(x=>{if(!D.got[x.id]&&x.f(D)>=x.n){D.got[x.id]=1;gain(x.xp);toast('Quest selesai: '+x.t+' (+'+x.xp+' XP)')}});save();draw()}
-function nx(){Z.sel=null;Z.pick=null;if(Z.i<29)Z.i++;else{Z.done=true;S.round[Z.s]=Z.n;gain(20)}save();draw();scrollTo(0,0)}
+function nx(){Z.sel=null;Z.pick=null;if(Z.i<29)Z.i++;else{Z.done=true;if(!TEST){S.round[Z.s]=Z.n;gain(20)}}save();draw();scrollTo(0,0)}
+let AC;
+function snd(pass){try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();AC.resume();const t0=AC.currentTime+.05,o=AC.destination;
+if(pass){const n=AC.sampleRate*.06,b=AC.createBuffer(1,n,AC.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,3);
+for(let i=0;i<110;i++){const s=AC.createBufferSource(),g=AC.createGain(),f=AC.createBiquadFilter();s.buffer=b;f.type='bandpass';f.frequency.value=1200+Math.random()*2800;f.Q.value=.8;g.gain.value=(.35+Math.random()*.4)*Math.min(1,i/20)*(i>90?(110-i)/20:1);s.connect(f);f.connect(g);g.connect(o);s.start(t0+i*.026+Math.random()*.02)}
+[523,659,784,1047].forEach((fq,i)=>{const os=AC.createOscillator(),g=AC.createGain(),st=t0+i*.12;os.type='triangle';os.frequency.value=fq;g.gain.setValueAtTime(.0001,st);g.gain.exponentialRampToValueAtTime(.25,st+.03);g.gain.exponentialRampToValueAtTime(.0001,st+.5);os.connect(g);g.connect(o);os.start(st);os.stop(st+.55)})}
+else{[392,349,330,262].forEach((fq,i)=>{const os=AC.createOscillator(),g=AC.createGain(),lf=AC.createOscillator(),lg=AC.createGain(),fl=AC.createBiquadFilter(),st=t0+i*.55;os.type='sawtooth';os.frequency.setValueAtTime(fq,st);os.frequency.linearRampToValueAtTime(fq*.93,st+.5);lf.frequency.value=6;lg.gain.value=fq*.03;lf.connect(lg);lg.connect(os.frequency);fl.type='lowpass';fl.frequency.value=900;g.gain.setValueAtTime(.0001,st);g.gain.exponentialRampToValueAtTime(.18,st+.08);g.gain.exponentialRampToValueAtTime(.0001,st+.52);os.connect(fl);fl.connect(g);g.connect(o);os.start(st);lf.start(st);os.stop(st+.55);lf.stop(st+.55)});
+for(let i=0;i<5;i++){const os=AC.createOscillator(),g=AC.createGain(),st=t0+2.3+i*.28;os.type='sine';os.frequency.setValueAtTime(700,st);os.frequency.linearRampToValueAtTime(950,st+.07);os.frequency.linearRampToValueAtTime(600,st+.2);g.gain.setValueAtTime(.0001,st);g.gain.exponentialRampToValueAtTime(.14,st+.04);g.gain.exponentialRampToValueAtTime(.0001,st+.22);os.connect(g);g.connect(o);os.start(st);os.stop(st+.25)}}}catch(e){}}
+function conf(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const c=document.createElement('canvas');c.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:50';document.body.appendChild(c);const x=c.getContext('2d'),W=c.width=innerWidth,H=c.height=innerHeight,cl=['#e63946','#f4a261','#2a9d8f','#457b9d','#ffd166','#c77dff'],pc=[];
+const burst=(ox,oy,vx)=>{for(let i=0;i<90;i++)pc.push({x:ox,y:oy,vx:vx+(Math.random()-.5)*10,vy:-8-Math.random()*12,w:6+Math.random()*6,h:4+Math.random()*5,r:Math.random()*6,vr:(Math.random()-.5)*.4,c:P(cl)})};
+burst(0,H,6);burst(W,H,-6);burst(W/2,H*.9,0);setTimeout(()=>{burst(0,H,7);burst(W,H,-7)},700);const t0=performance.now();
+(function f(){x.clearRect(0,0,W,H);pc.forEach(p=>{p.vy+=.35;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.w/2,-p.h/2,p.w,p.h);x.restore()});if(performance.now()-t0<5000&&pc.some(p=>p.y<H+20))requestAnimationFrame(f);else c.remove()})()}
+const fx=pass=>{snd(pass);if(pass)conf()};
+function skip(){Z.ok=Z.s=='mtk'?30:Z.s=='ind'?0:Z.ok;Z.sel=null;Z.done=true;draw();scrollTo(0,0)}
 function home(){view='home';Z=null;draw()}
 const bar=p=>`<div class="bar"><i style="width:${Math.round(p*100)}%"></i></div>`;
 function draw(){roll();const a=$('#app');
 if(view=='home'){const sk=S.last==T()||S.last==Y()?S.streak:0;
 a.innerHTML=`<header><div><h1>TO TKA SMA</h1><p class="m">Latihan per ronde, 30 soal, selalu soal baru</p></div><div class="chip">🔥 ${sk} hari<br>⭐ Level ${Math.floor(S.xp/200)+1}</div></header>${bar(S.xp%200/200)}<p class="m">${S.xp%200}/200 XP menuju level berikutnya</p>
 <h2>Pilih mapel</h2><div class="g">${Object.keys(SUB).map(k=>`<button class="card" onclick="start('${k}')"><span class="e">${SUB[k][1]}</span><b>${SUB[k][0]}</b><span class="m">Mulai Ronde ${(S.round[k]||0)+1}, ${(S.seen[k]||[]).length} soal sudah dikerjakan</span></button>`).join('')}</div>
-<h2>Daily Quest</h2>${QS.map(x=>{const v=Math.min(x.f(S.dq),x.n),d=v>=x.n;return`<div class="q ${d?'dn':''}"><b>${d?'✅ ':''}${x.t}</b> <span class="m">+${x.xp} XP</span>${bar(v/x.n)}<span class="m">${v}/${x.n}</span></div>`}).join('')}<p class="m">Quest direset setiap hari. Progres tersimpan di browser ini.</p>`;return}
-const hd=`<header><button class="lnk" onclick="home()">← Menu</button><div class="chip">${SUB[Z.s][0]}<br>Ronde ${Z.n}</div></header>`;
-if(Z.done){a.innerHTML=`${hd}<div class="res"><h2>Ronde ${Z.n} selesai! 🎉</h2><div class="big">${Z.ok}/30</div><p>${Math.round(Z.ok/30*100)}% benar, +${Z.xp} XP</p>${Z.reset?'<p class="m">Semua soal di bank mapel ini sudah pernah keluar, jadi sebagian soal dimulai ulang.</p>':''}<button class="pri" onclick="start('${Z.s}')">Lanjut Ronde ${Z.n+1} (soal baru)</button><button class="sec" onclick="home()">Kembali ke menu</button></div>`;return}
+<h2>Daily Quest</h2>${QS.map(x=>{const v=Math.min(x.f(S.dq),x.n),d=v>=x.n;return`<div class="q ${d?'dn':''}"><b>${d?'✅ ':''}${x.t}</b> <span class="m">+${x.xp} XP</span>${bar(v/x.n)}<span class="m">${v}/${x.n}</span></div>`}).join('')}<p class="m">Quest direset setiap hari. Progres tersimpan di browser ini.</p><h2>Tes efek</h2><button class="sec" onclick="TEST=!TEST;draw()">${TEST?'✅ Mode tes efek AKTIF (klik untuk mematikan)':'🧪 Aktifkan mode tes efek'}</button><p class="m">${TEST?'Matematika dianggap benar semua, B.Indonesia salah semua, B.Inggris normal. Skor, XP, dan quest tidak disimpan.':'Untuk mencoba confetti dan suara tanpa harus mengerjakan soal dengan benar.'}</p>`;return}
+const hd=`<header><button class="lnk" onclick="home()">← Menu</button><div class="chip">${SUB[Z.s][0]}<br>Ronde ${Z.n}</div></header>${TEST?'<p class="m">🧪 Mode tes efek aktif: skor, XP, dan quest tidak disimpan.</p>':''}${TEST&&!Z.done?'<button class="sec" onclick="skip()">⏭ Langsung ke hasil (tes)</button>':''}`;
+if(Z.done){const sc=Math.round(Z.ok/30*100),pass=sc>=80;if(!Z.fx){Z.fx=1;setTimeout(()=>fx(pass),60)}a.innerHTML=`${hd}<div class="res"><h2>Ronde ${Z.n} selesai! ${pass?'🎉':'😢'}</h2><div class="big">${Z.ok}/30</div><p>${sc}% benar, +${Z.xp} XP</p><div class="msg ${pass?'pa':'fa'}">${pass?'🎉 Selamat! Nilai kamu di atas KKM. Pertahankan, ya!':'Yahhh... nilai kamu masih di bawah KKM. Belajar yang giat yah, sebentar lagi TKA loh!'}</div>${Z.reset?'<p class="m">Semua soal di bank mapel ini sudah pernah keluar, jadi sebagian soal dimulai ulang.</p>':''}<button class="pri" onclick="start('${Z.s}')">Lanjut Ronde ${Z.n+1} (soal baru)</button><button class="sec" onclick="home()">Kembali ke menu</button></div>`;return}
 const q=Z.qs[Z.i],an=Z.sel!=null;if(!Z.pick)Z.pick=q.t?q.o.map(()=>q.t=='tf'?null:false):[];
 a.innerHTML=`${hd}${bar(Z.i/30)}<p class="m">Soal ${Z.i+1} dari 30, benar ${Z.ok}</p>${q.p?`<div class="ps">${q.p}</div>`:''}<div class="qc">${q.q}</div>${q.t?mt(q,an):q.o.map((o,k)=>`<button class="opt ${an?(k==q.a?'ok':k==Z.sel?'no':''):''}" ${an?'disabled':''} onclick="ans(${k})"><b>${'ABCD'[k]}.</b> <span>${o}</span></button>`).join('')}${an?`<div class="ex">${Z.res?'✅ Benar! ':'❌ Belum tepat. '}${q.e||''}</div><button class="pri" onclick="nx()">${Z.i<29?'Soal berikutnya':'Lihat hasil'}</button>`:''}`}
 draw();

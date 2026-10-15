@@ -1,0 +1,95 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>TO TKA SMA</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#eef3f7;--card:#fff;--tx:#17212b;--mut:#5d6b7a;--ac:#1d5fd1;--acs:#e4edfc;--ok:#157a43;--okb:#dff4e7;--no:#b3261e;--nob:#fbe4e1;--bd:#d5dde6}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#0f151c;--card:#18212b;--tx:#e8eef5;--mut:#93a2b3;--ac:#6ea2ff;--acs:#1c2c47;--ok:#5fd28d;--okb:#163525;--no:#ff8a80;--nob:#3b1d1a;--bd:#2a3644}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0f151c;--card:#18212b;--tx:#e8eef5;--mut:#93a2b3;--ac:#6ea2ff;--acs:#1c2c47;--ok:#5fd28d;--okb:#163525;--no:#ff8a80;--nob:#3b1d1a;--bd:#2a3644}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 "Segoe UI",system-ui,-apple-system,sans-serif}
+#app{max-width:720px;margin:auto;padding:18px 16px 40px}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+h1{margin:0;font-size:1.7rem;letter-spacing:-.02em}h2{font-size:1.1rem;margin:26px 0 10px}
+.m{color:var(--mut);font-size:.88rem}p{margin:4px 0}
+.chip{background:var(--acs);color:var(--ac);padding:6px 12px;border-radius:10px;font-weight:600;font-size:.88rem;text-align:right}
+.bar{height:8px;background:var(--bd);border-radius:8px;overflow:hidden;margin:6px 0}.bar i{display:block;height:100%;background:var(--ac);border-radius:8px;transition:width .3s}
+.g{display:grid;gap:10px}
+.card{display:flex;flex-direction:column;gap:2px;text-align:left;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px 16px;color:var(--tx);font:inherit;cursor:pointer}
+.card:hover,.card:focus-visible{border-color:var(--ac)}.card b{font-size:1.1rem}.e{font-size:1.6rem}
+.q{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:10px 14px;margin-bottom:8px}.q.dn{border-color:var(--ok)}
+.qc{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px;margin:10px 0 12px;font-size:1.08rem}
+.opt{display:flex;gap:10px;width:100%;text-align:left;background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:11px 14px;margin-bottom:8px;color:var(--tx);font:inherit;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--ac)}.opt:disabled{cursor:default;color:var(--tx)}
+.opt.ok{background:var(--okb);border-color:var(--ok)}.opt.no{background:var(--nob);border-color:var(--no)}
+.ex{background:var(--acs);border-radius:10px;padding:10px 14px;margin:10px 0}
+.pri,.sec{display:block;width:100%;padding:12px;border-radius:10px;font:inherit;font-weight:600;cursor:pointer;margin-top:10px}
+.pri{background:var(--ac);color:#fff;border:0}.sec{background:none;color:var(--ac);border:1px solid var(--ac)}
+.lnk{background:none;border:0;color:var(--ac);font:inherit;cursor:pointer;padding:6px 0}
+.res{text-align:center;padding-top:20px}.big{font-size:3.4rem;font-weight:700;color:var(--ac)}
+#t{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:.9rem;opacity:0;pointer-events:none;transition:opacity .25s;max-width:90vw;text-align:center}#t.s{opacity:1}
+button:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+</style></head><body><div id="app"></div><div id="t"></div>
+<script>
+const $=s=>document.querySelector(s),R=n=>Math.floor(Math.random()*n),P=a=>a[R(a.length)],sh=a=>[...a].sort(()=>Math.random()-.5);
+const T=()=>new Date().toLocaleDateString('en-CA'),Y=()=>new Date(Date.now()-864e5).toLocaleDateString('en-CA');
+let S={};try{S=JSON.parse(localStorage.getItem('tka1'))||{}}catch(e){}
+S.seen=S.seen||{};S.round=S.round||{};S.xp=S.xp||0;S.streak=S.streak||0;S.last=S.last||'';
+const save=()=>{try{localStorage.setItem('tka1',JSON.stringify(S))}catch(e){}};
+function roll(){if(S.day!==T()||!S.dq){S.day=T();S.dq={ans:0,ok:0,subj:[],combo:0,mc:0,got:{}};save()}}
+let view='home',Z=null,tm;
+const toast=m=>{const t=$('#t');t.textContent=m;t.classList.add('s');clearTimeout(tm);tm=setTimeout(()=>t.classList.remove('s'),2600)};
+const gain=n=>{S.xp+=n;if(Z)Z.xp+=n};
+const SUB={mtk:['Matematika','🧮'],ind:['Bahasa Indonesia','📖'],ing:['Bahasa Inggris','🌍']};
+const QS=[{id:'a',t:'Jawab 20 soal',n:20,xp:50,f:d=>d.ans},{id:'b',t:'Benar 15 soal',n:15,xp:60,f:d=>d.ok},{id:'c',t:'Coba 2 mapel berbeda',n:2,xp:40,f:d=>d.subj.length},{id:'d',t:'Combo 5 jawaban benar beruntun',n:5,xp:40,f:d=>d.mc}];
+/* ===== Pembuat soal ===== */
+const mk=(q,a,w,e)=>{a=String(a);const o=sh([a,...[...new Set(w.map(String))].filter(x=>x!==a).slice(0,3)]);return{q,o,a:o.indexOf(a),e}};
+const L=s=>s.split(',').map(x=>x.split('/'));
+const pm=(l,t0,t1)=>()=>{const i=R(l.length),d=t1?R(2):0,[x,y]=d?[l[i][1],l[i][0]]:l[i];return mk((d?t1:t0).replace('#',x),y,sh(l.filter((_,j)=>j!==i).map(p=>p[d?0:1])),'Jawaban yang tepat: '+y)};
+const f=n=>n.toLocaleString('id-ID'),nd=c=>[c+1,c-1,c+2,c-2,c+3,c*2+1];
+const M=[
+()=>{const a=2+R(8),x=1+R(12),b=1+R(20);return mk(`Jika ${a}x + ${b} = ${a*x+b}, maka nilai x adalah ...`,x,nd(x),`${a}x = ${a*x}, sehingga x = ${x}.`)},
+()=>{const p=1+R(9),q=1+R(9),s=p+q,r=p*q,c=p*p+q*q;return mk(`Akar-akar persamaan x² − ${s}x + ${r} = 0 adalah x₁ dan x₂. Nilai x₁² + x₂² adalah ...`,c,[s*s,s*s-r,c+2,c-2,r*2+s],`x₁² + x₂² = (x₁+x₂)² − 2x₁x₂ = ${s*s} − ${2*r} = ${c}.`)},
+()=>{const a=2+R(6),n=2+R(3),k=1+R(4),c=a*n*k**(n-1);return mk(`Jika f(x) = ${a}x${['²','³','⁴'][n-2]}, maka nilai f′(${k}) adalah ...`,c,[a*k**n,c+a,c-a,c*2,c+n],`f′(x) = ${a*n}x^${n-1}, sehingga f′(${k}) = ${c}.`)},
+()=>{const h=(5+R(20))*1e4,d=P([10,20,25,30,40]),b=h*(100-d)/100;return mk(`Harga sebuah tas Rp${f(h)}. Dengan diskon ${d}%, harga yang harus dibayar adalah ...`,'Rp'+f(b),[h*d/100,b+5000,b-5000,b+1e4].map(v=>'Rp'+f(v)),`Bayar = ${100-d}% × Rp${f(h)} = Rp${f(b)}.`)},
+()=>{const a=1+R(10),b=2+R(5);if(R(2)){const n=8+R(12),u=a+(n-1)*b;return mk(`Barisan aritmetika memiliki suku pertama ${a} dan beda ${b}. Suku ke-${n} adalah ...`,u,[u+b,u-b,u+a,u-1,u+2],`Uₙ = a + (n−1)b = ${a} + ${n-1}×${b} = ${u}.`)}const n=2*(3+R(5)),s=n/2*(2*a+(n-1)*b);return mk(`Jumlah ${n} suku pertama deret aritmetika dengan suku pertama ${a} dan beda ${b} adalah ...`,s,[s+n,s-n,s+b*n,s-b,s+10],`Sₙ = n/2 (2a + (n−1)b) = ${s}.`)},
+()=>{const n=5+R(10),c=n*(n-1)/2;return mk(`Dari ${n} siswa akan dipilih 2 orang sebagai pengurus kelas (tanpa membedakan jabatan). Banyak cara pemilihan adalah ...`,c,[n*(n-1),n*2,c+n,c-1],`C(${n},2) = ${n}×${n-1}/2 = ${c}.`)},
+()=>{const a=P([2,3,4,5]),k=2+R(4);return mk(`Nilai dari ${a}log ${a**k} adalah ...`,k,[k+1,k-1,k+2,k*2,a],`${a}log ${a}^${k} = ${k}.`)},
+()=>{const r=7*(1+R(4)),A=22*r*r/7;return mk(`Luas lingkaran berjari-jari ${r} cm (π = 22/7) adalah ... cm²`,A,[44*r/7,2*A,r*r,A+r],`L = πr² = 22/7 × ${r}² = ${A}.`)},
+()=>{const m=P([-3,-2,-1,1,2,3,4]),dx=1+R(4),x=R(5),y=R(9)-4;return mk(`Gradien garis yang melalui titik (${x}, ${y}) dan (${x+dx}, ${y+m*dx}) adalah ...`,m,[-m,m+1,m-1,m*2,m+2],`m = Δy/Δx = ${m*dx}/${dx} = ${m}.`)}];
+const BAKU=L('apotek/apotik,analisis/analisa,risiko/resiko,aktif/aktip,nasihat/nasehat,izin/ijin,kualitas/kwalitas,objek/obyek,praktik/praktek,silakan/silahkan,hakikat/hakekat,jadwal/jadual,khawatir/kuatir,sistem/sistim,teknik/tehnik,subjek/subyek,kuantitas/kwantitas,atlet/atlit,ijazah/ijasah');
+const MAJ=[["Angin berbisik di telingaku.","personifikasi"],["Tangisnya membanjiri seluruh kota.","hiperbola"],["Perpustakaan adalah jendela dunia.","metafora"],["Wajahnya pucat bagai kapas.","simile"],["Rapi sekali kamarmu, sampai tak ada lantai yang terlihat.","ironi"],["Terimalah hadiah kecil yang tak seberapa ini.","litotes"],["Setiap kepala wajib membayar iuran sepuluh ribu rupiah.","sinekdoke"],["Kakeknya telah berpulang tadi pagi.","eufemisme"],["Mentari tersenyum menyambut pagi.","personifikasi"],["Kerja kerasnya setinggi langit tak pernah ia banggakan.","hiperbola"]];
+const IMB=L('tulis/menulis,sapu/menyapu,pukul/memukul,tari/menari,cat/mengecat,ambil/mengambil,baca/membaca,sikat/menyikat,kirim/mengirim,beli/membeli,lihat/melihat,tanam/menanam,ukir/mengukir,gambar/menggambar,pilih/memilih,sambung/menyambung');
+const imb=()=>{const[b,a]=P(IMB);return mk(`Bentuk berimbuhan me- dari kata "${b}" yang benar adalah ...`,a,['me','men','mem','meng','meny','menge'].map(p=>p+b),`Awalan me- menyesuaikan huruf awal kata dasar: ${b} → ${a}.`)};
+const VB=L('take/took/taken,eat/ate/eaten,write/wrote/written,see/saw/seen,begin/began/begun,drink/drank/drunk,give/gave/given,speak/spoke/spoken,break/broke/broken,choose/chose/chosen,know/knew/known,steal/stole/stolen,hide/hid/hidden,wear/wore/worn,forget/forgot/forgotten');
+const vb=()=>{const[a,b,c]=P(VB),k=R(3),q=[`Yesterday, Rina ___ it quickly. (${a})`,`They have already ___ it. (${a})`,`The task was ___ by the whole class. (${a})`][k];const A=k?c:b;return mk(q,A,[a,b,c,a+'s'],['Past simple memakai V2 karena ada "yesterday".','Present perfect: have + V3.','Kalimat pasif: was + V3.'][k]+` (${a} – ${b} – ${c})`)};
+const PR=[["She is good|at|mathematics."],["He is afraid|of|spiders."],["We arrived|at|the airport at noon."],["The meeting starts|at|9 a.m."],["I have lived here|since|2019."],["She has worked here|for|three years."],["He is interested|in|robotics."],["The book is|on|the table."],["They are waiting|for|the bus."],["She is married|to|a doctor."],["This cake is made|of|rice flour."],["He was born|in|1999."]].map(x=>x[0].split('|'));
+const pp=()=>{const[a,w,b]=P(PR);return mk(`${a} ___ ${b}`,w,sh(['in','on','at','of','for','with','to','by','since','from']),`Kata depan yang tepat: "${w}".`)};
+const G={mtk:M,
+ind:[pm(BAKU,'Bentuk tidak baku dari kata "#" adalah ...','Bentuk baku dari kata "#" adalah ...'),
+pm(L('gigih/tekun,lugas/langsung,arif/bijaksana,fasih/lancar,mutakhir/terbaru,lazim/umum,hakiki/sejati,esensial/penting,kontemporer/masa kini,solid/kokoh,tangkas/cekatan,lantang/nyaring'),'Sinonim kata "#" adalah ...','Kata yang bersinonim dengan "#" adalah ...'),
+pm(L('kuno/modern,rajin/malas,hemat/boros,pelit/dermawan,sukses/gagal,rumit/sederhana,lamban/cepat,hening/bising,mahir/awam,abadi/fana'),'Antonim kata "#" adalah ...','Lawan kata dari "#" adalah ...'),
+imb,pm(MAJ,'Majas pada kalimat "#" adalah ...')],
+ing:[pm(L('abundant/plentiful,reluctant/unwilling,diligent/hardworking,essential/necessary,rapid/fast,genuine/authentic,fragile/delicate,obvious/clear,scarce/rare,courageous/brave,hesitate/pause,enormous/huge,assist/help,conceal/hide,expand/enlarge,vague/unclear'),'The closest meaning of "#" is ...','Which word is closest in meaning to "#"?'),
+pm(L('expand/shrink,ancient/modern,generous/stingy,brave/cowardly,scarce/abundant,accept/reject,victory/defeat,increase/decrease,permit/forbid,temporary/permanent'),'The opposite of "#" is ...','Which word is the antonym of "#"?'),vb,pp]};
+/* ===== Alur ronde ===== */
+function start(s){roll();const seen=new Set(S.seen[s]||[]),cur=new Set(),qs=[];let reset=false,tr=0;
+while(qs.length<30){const q=P(G[s])();q.id=q.q+'|'+q.o[q.a];if(seen.has(q.id)||cur.has(q.id)){if(++tr>150){if(reset)break;reset=true;seen.clear();S.seen[s]=[];tr=0}continue}cur.add(q.id);qs.push(q);tr=0}
+Z={s,qs,i:0,ok:0,done:false,reset,sel:null,n:(S.round[s]||0)+1,xp:0};view='quiz';draw();scrollTo(0,0)}
+function ans(k){const q=Z.qs[Z.i];if(Z.sel!=null)return;Z.sel=k;roll();const D=S.dq,ok=k==q.a;
+if(S.last!==T()){S.streak=S.last===Y()?S.streak+1:1;S.last=T()}
+(S.seen[Z.s]=S.seen[Z.s]||[]).push(q.id);D.ans++;if(!D.subj.includes(Z.s))D.subj.push(Z.s);
+if(ok){Z.ok++;D.ok++;D.combo++;D.mc=Math.max(D.mc,D.combo);gain(10)}else D.combo=0;
+QS.forEach(x=>{if(!D.got[x.id]&&x.f(D)>=x.n){D.got[x.id]=1;gain(x.xp);toast('Quest selesai: '+x.t+' (+'+x.xp+' XP)')}});save();draw()}
+function nx(){Z.sel=null;if(Z.i<29)Z.i++;else{Z.done=true;S.round[Z.s]=Z.n;gain(20)}save();draw();scrollTo(0,0)}
+function home(){view='home';Z=null;draw()}
+const bar=p=>`<div class="bar"><i style="width:${Math.round(p*100)}%"></i></div>`;
+function draw(){roll();const a=$('#app');
+if(view=='home'){const sk=S.last==T()||S.last==Y()?S.streak:0;
+a.innerHTML=`<header><div><h1>TO TKA SMA</h1><p class="m">Latihan per ronde, 30 soal, selalu soal baru</p></div><div class="chip">🔥 ${sk} hari<br>⭐ Level ${Math.floor(S.xp/200)+1}</div></header>${bar(S.xp%200/200)}<p class="m">${S.xp%200}/200 XP menuju level berikutnya</p>
+<h2>Pilih mapel</h2><div class="g">${Object.keys(SUB).map(k=>`<button class="card" onclick="start('${k}')"><span class="e">${SUB[k][1]}</span><b>${SUB[k][0]}</b><span class="m">Mulai Ronde ${(S.round[k]||0)+1}, ${(S.seen[k]||[]).length} soal sudah dikerjakan</span></button>`).join('')}</div>
+<h2>Daily Quest</h2>${QS.map(x=>{const v=Math.min(x.f(S.dq),x.n),d=v>=x.n;return`<div class="q ${d?'dn':''}"><b>${d?'✅ ':''}${x.t}</b> <span class="m">+${x.xp} XP</span>${bar(v/x.n)}<span class="m">${v}/${x.n}</span></div>`}).join('')}<p class="m">Quest direset setiap hari. Progres tersimpan di browser ini.</p>`;return}
+const hd=`<header><button class="lnk" onclick="home()">← Menu</button><div class="chip">${SUB[Z.s][0]}<br>Ronde ${Z.n}</div></header>`;
+if(Z.done){a.innerHTML=`${hd}<div class="res"><h2>Ronde ${Z.n} selesai! 🎉</h2><div class="big">${Z.ok}/30</div><p>${Math.round(Z.ok/30*100)}% benar, +${Z.xp} XP</p>${Z.reset?'<p class="m">Semua soal di bank mapel ini sudah pernah keluar, jadi sebagian soal dimulai ulang.</p>':''}<button class="pri" onclick="start('${Z.s}')">Lanjut Ronde ${Z.n+1} (soal baru)</button><button class="sec" onclick="home()">Kembali ke menu</button></div>`;return}
+const q=Z.qs[Z.i],an=Z.sel!=null;
+a.innerHTML=`${hd}${bar(Z.i/30)}<p class="m">Soal ${Z.i+1} dari 30, benar ${Z.ok}</p><div class="qc">${q.q}</div>${q.o.map((o,k)=>`<button class="opt ${an?(k==q.a?'ok':k==Z.sel?'no':''):''}" ${an?'disabled':''} onclick="ans(${k})"><b>${'ABCD'[k]}.</b> <span>${o}</span></button>`).join('')}${an?`<div class="ex">${Z.sel==q.a?'✅ Benar! ':'❌ Belum tepat. '}${q.e||''}</div><button class="pri" onclick="nx()">${Z.i<29?'Soal berikutnya':'Lihat hasil'}</button>`:''}`}
+draw();
+</script></body></html>
